@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Milenio - Catálogo y Personalización</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- VENTANA MODAL DE PUBLICIDAD / BIENVENIDA -->
+    <div class="welcome-modal-overlay" id="welcome-modal">
+        <div class="welcome-modal-card">
+            <div class="modal-header">
+                <h3>Bienvenido a Vintage Milenio</h3>
+                <button class="modal-close-btn" onclick="cerrarModalBienvenida()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-slider-container">
+                <button class="slider-arrow prev" onclick="cambiarSlideModal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="slider-arrow next" onclick="cambiarSlideModal(1)"><i class="fa-solid fa-chevron-right"></i></button>
+
+                <div class="modal-slides-track" id="modal-slides-track">
+                    <div class="modal-slide active">
+                        <img src="img/morral-1-1.jpg" alt="Anuncio 1">
+                    </div>
+                    <div class="modal-slide">
+                        <img src="img/maletin-1-1.jpg" alt="Anuncio 2">
+                    </div>
+                    <div class="modal-slide">
+                        <img src="img/mochila-op-1.jpg" alt="Anuncio 3">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-dots" id="modal-dots-container">
+                <span class="dot-indicator active" onclick="irASlideModal(0)"></span>
+                <span class="dot-indicator" onclick="irASlideModal(1)"></span>
+                <span class="dot-indicator" onclick="irASlideModal(2)"></span>
+            </div>
+
+            <div class="modal-footer">
+                <h4 id="modal-slide-title">Nueva Colección Exclusiva</h4>
+                <button class="btn-modal-explore" onclick="explorarDesdeModal()">
+                    Explorar catálogo <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <a href="#" class="modal-skip-link" onclick="cerrarModalBienvenida()">Continuar a la tienda</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL DE DETALLE DE PRODUCTO (CARACTERÍSTICAS Y ESPECIFICACIONES) -->
+    <div class="product-detail-modal-overlay" id="product-detail-modal">
+        <div class="product-detail-modal-card">
+            <button class="detail-modal-close" onclick="cerrarModalDetalle()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="detail-modal-body" id="detail-modal-content-area">
+                <!-- Se inyecta dinámicamente desde script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra Superior de Anuncios -->
+    <div class="top-announcement-bar">
+        <span>⚡ Envíos a todo el Perú - Gratis por compras mayores a S/ 150 ⚡ Pagos seguros con Yape, Plin y Transferencia</span>
+    </div>
+
+    <!-- CABECERA DE 2 NIVELES (TIPO MOY STORE) -->
+    <header class="site-header">
+        <!-- Nivel 1: Logo + Buscador + Carrito -->
+        <div class="header-top-row">
+            <div class="container header-top-container">
+                <div class="logo-area">
+                    <a href="#" onclick="cambiarVista('home')">
+                        <img src="img/logotienda.png" alt="Vintage Milenio Logo" class="brand-logo">
+                        <span class="brand-name">MILENIO VINTAGE</span>
+                    </a>
+                </div>
+
+                <div class="header-search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="global-search-input" placeholder="Busca tu producto (ej. Morral, Mochila, Ita-bag)..." onkeyup="buscarEnCatalogoGlobal(event)">
+                </div>
+
+                <div class="header-cart-widget" id="cart-btn">
+                    <div class="cart-widget-icon">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span id="cart-count">0</span>
+                    </div>
+                    <div class="cart-widget-text">
+                        <span class="widget-label">Carrito</span>
+                        <strong id="header-cart-total">S/ 0.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nivel 2: Barra de Menú / Categorías -->
+        <div class="header-bottom-nav">
+            <div class="container">
+                <nav class="main-nav">
+                    <a href="#" onclick="cambiarVista('home')">Inicio</a>
+                    <a href="#" onclick="cambiarVista('catalogo', 'todos')">Catálogo</a>
+                    <a href="#" onclick="cambiarVista('catalogo', 'morrales')">Morrales</a>
+                    <a href="#" onclick="cambiarVista('catalogo', 'mochilas')">Mochilas</a>
+                    <a href="#" onclick="cambiarVista('catalogo', 'carteras')">Carteras</a>
+                    <a href="#" onclick="cambiarVista('catalogo', 'accesorios')">Accesorios</a>
+                    <a href="#" onclick="cambiarVista('personaliza')" class="highlight-link"><i class="fa-solid fa-wand-magic-sparkles"></i> Personaliza a tu medida</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN 1: INICIO (HOME) -->
+    <section id="page-home" class="page-section active-section">
+        <!-- PORTADA HERO CON TEXTO ANIMADO -->
+        <div class="hero-section" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('img/estrella/estrella\ 1.png');">
+            <div class="hero-content">
+                <span class="hero-badge">TIENDA VIRTUAL</span>
+                <h1 class="hero-animated-title">
+                    PRODUCTOS <br>
+                    <span class="animated-text-holder" id="animated-hero-text">VINTAGE</span>
+                </h1>
+                <p class="hero-subtitle">¡Envíos rápidos a todo el Perú!</p>
+                <button onclick="cambiarVista('catalogo', 'todos')" class="btn-hero-catalog">Ver catálogo <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- CATEGORÍAS PRINCIPALES -->
+        <div class="categories-section">
+            <div class="container">
+                <h2>Explora por categoría</h2>
+                <div class="categories-grid">
+                    <div onclick="cambiarVista('catalogo', 'morrales')" class="category-card">
+                        <img src="img/morral-1-1.jpg" alt="Morrales">
+                        <h3>Morrales</h3>
+                    </div>
+                    <div onclick="cambiarVista('catalogo', 'mochilas')" class="category-card">
+                        <img src="img/mochila-op-1.jpg" alt="Mochilas">
+                        <h3>Mochilas</h3>
+                    </div>
+                    <div onclick="cambiarVista('catalogo', 'carteras')" class="category-card">
+                        <img src="img/bolso-japones-1.jpg" alt="Carteras">
+                        <h3>Carteras</h3>
+                    </div>
+                    <div onclick="cambiarVista('catalogo', 'accesorios')" class="category-card">
+                        <img src="img/lanyard-1.jpg" alt="Accesorios">
+                        <h3>Accesorios</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE OFERTAS RÁPIDAS -->
+        <div class="quick-offers-section">
+            <div class="container">
+                <div class="quick-offers-grid">
+                    <div class="quick-offer-card" onclick="cambiarVista('catalogo', 'morrales')">
+                        <div class="offer-img-box">
+                            <img src="img/morral-1-1.jpg" alt="Morrales Canvas">
+                        </div>
+                        <div class="offer-info">
+                            <span class="offer-subtitle">MORRALES DE</span>
+                            <h4>LONA CANVAS</h4>
+                            <p class="offer-price">desde <span>S/ 59.00</span></p>
+                            <span class="offer-link">Ver más <i class="fa-solid fa-circle-chevron-right"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="quick-offer-card" onclick="cambiarVista('catalogo', 'mochilas')">
+                        <div class="offer-img-box">
+                            <img src="img/mochila-op-1.jpg" alt="Mochilas Otaku">
+                        </div>
+                        <div class="offer-info">
+                            <span class="offer-subtitle">MOCHILAS</span>
+                            <h4>TEMÁTICAS ANIME</h4>
+                            <p class="offer-price">desde <span>S/ 69.00</span></p>
+                            <span class="offer-link">Ver más <i class="fa-solid fa-circle-chevron-right"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="quick-offer-card" onclick="cambiarVista('catalogo', 'accesorios')">
+                        <div class="offer-img-box">
+                            <img src="img/lanyard-1.jpg" alt="Lanyards & Correas">
+                        </div>
+                        <div class="offer-info">
+                            <span class="offer-subtitle">CORREAS Y</span>
+                            <h4>LANYARDS</h4>
+                            <p class="offer-price">desde <span>S/ 15.00</span></p>
+                            <span class="offer-link">Ver más <i class="fa-solid fa-circle-chevron-right"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="quick-offer-card" onclick="cambiarVista('personaliza')">
+                        <div class="offer-img-box">
+                            <img src="img/bandolera-1.jpg" alt="Modelos a Medida">
+                        </div>
+                        <div class="offer-info">
+                            <span class="offer-subtitle">PEDIDOS</span>
+                            <h4>A TU MEDIDA</h4>
+                            <p class="offer-price">desde <span>S/ 45.00</span></p>
+                            <span class="offer-link">Ver más <i class="fa-solid fa-circle-chevron-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 2: CATÁLOGO DINÁMICO -->
+    <section id="page-catalogo" class="page-section">
+        <div class="container catalog-container">
+            <h1 class="catalog-title">Todo el catálogo</h1>
+            <div class="catalog-controls">
+                <div class="filter-pills">
+                    <button class="pill active" data-filter="todos" onclick="filtrarCatalogo('todos')">Todos</button>
+                    <button class="pill" data-filter="morrales" onclick="filtrarCatalogo('morrales')">Morrales</button>
+                    <button class="pill" data-filter="mochilas" onclick="filtrarCatalogo('mochilas')">Mochilas</button>
+                    <button class="pill" data-filter="carteras" onclick="filtrarCatalogo('carteras')">Carteras</button>
+                    <button class="pill" data-filter="accesorios" onclick="filtrarCatalogo('accesorios')">Accesorios</button>
+                </div>
+                <div class="catalog-search">
+                    <input type="text" id="catalog-search-input" placeholder="Filtrar por palabra..." onkeyup="buscarEnCatalogo()">
+                </div>
+            </div>
+            <div class="products-grid" id="main-products-grid"></div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3: PERSONALIZA A TU MEDIDA -->
+    <section id="page-personaliza" class="page-section">
+        <div class="container custom-page-container">
+            <span class="custom-tag">A TU GUSTO</span>
+            <h1 class="custom-title">Personaliza a tu medida</h1>
+            <p class="custom-desc">Ingresa tus medidas, sube la foto frontal de referencia de tu modelo y envíanos tu solicitud directamente.</p>
+
+            <div class="custom-layout">
+                <div class="custom-form-card">
+                    <h2>Envía tu solicitud</h2>
+                    <form id="custom-request-form" onsubmit="enviarSolicitudPersonalizada(event)">
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" id="cust-nombre" placeholder="Tu nombre completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">WhatsApp *</label>
+                                <input type="tel" id="cust-whatsapp" placeholder="Ej. 987 654 321" required>
+                            </div>
+                        </div>
+
+                        <label class="form-label">Medidas del producto (cm)</label>
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <input type="number" id="medida-alto" value="26" min="1" placeholder="Alto" required>
+                                <small class="sub-label">Alto</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="medida-ancho" value="32" min="1" placeholder="Ancho" required>
+                                <small class="sub-label">Ancho</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="medida-fuelle" value="12" min="1" placeholder="Fuelle" required>
+                                <small class="sub-label">Fuelle (Fondo)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Modelo de referencia *</label>
+                            <input type="text" id="cust-modelo" placeholder="Ej. Morral Anime / Ita-Bag / Maletín" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Detalles adicionales *</label>
+                            <textarea id="cust-detalle" rows="3" placeholder="Describe materiales (lona, drill, cuero), cierres, bolsillos o colores..." required></textarea>
+                        </div>
+
+                        <div class="upload-zone" onclick="document.getElementById('cust-image-file').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p id="upload-status-text">Haz clic para <strong>subir la foto frontal principal</strong></p>
+                            <span class="file-hint">Formatos: JPG, PNG (máx. 10 MB)</span>
+                            <input type="file" id="cust-image-file" accept="image/*" style="display: none;" onchange="mostrarVistaPreviaFrontal(this)">
+                        </div>
+
+                        <button type="submit" class="btn-submit-custom" id="btn-submit-cust-main">
+                            <i class="fa-brands fa-whatsapp"></i> Enviar solicitud por WhatsApp
+                        </button>
+                    </form>
+                </div>
+
+                <div class="preview-frontal-wrapper">
+                    <div class="preview-header">
+                        <h3><i class="fa-regular fa-image"></i> Foto Principal Frontal</h3>
+                    </div>
+                    <div class="preview-box-container" id="preview-box">
+                        <div class="empty-preview-msg" id="empty-preview-msg">
+                            <i class="fa-solid fa-image"></i>
+                            <p>Sube una foto para ver la vista previa de tu modelo</p>
+                        </div>
+                        <img id="img-preview-frontal" src="" alt="Vista previa frontal" class="hidden">
+                    </div>
+                    <div class="preview-footer">
+                        <p>Esta foto se enviará adjunta en el enlace de WhatsApp para fabricar tu pedido.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 4: CHECKOUT -->
+    <section id="page-checkout" class="page-section">
+        <div class="container checkout-container">
+            <h1 class="checkout-title">Finalizar compra</h1>
+            <div class="checkout-layout">
+                <div class="checkout-form-area">
+                    <div class="checkout-step-block">
+                        <h2>1. Tus datos</h2>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Nombre y apellido *</label>
+                                <input type="text" id="chk-nombre" placeholder="Nombre completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Número de WhatsApp *</label>
+                                <input type="tel" id="chk-whatsapp" placeholder="Ej. 987 654 321" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-step-block">
+                        <h2>2. Modalidad de entrega</h2>
+                        <div class="delivery-options-grid">
+                            <div class="delivery-card active" id="del-card-domicilio" onclick="seleccionarDelivery('domicilio', 10)">
+                                <i class="fa-solid fa-house"></i>
+                                <strong>Delivery a domicilio</strong>
+                                <span>Solo Lima · Costo fijo S/ 10</span>
+                            </div>
+                            <div class="delivery-card" id="del-card-estacion" onclick="seleccionarDelivery('estacion', 0)">
+                                <i class="fa-solid fa-train"></i>
+                                <strong>Entrega en estación</strong>
+                                <span>¡Gratis! Coordinamos día y hora</span>
+                            </div>
+                            <div class="delivery-card" id="del-card-provincia" onclick="seleccionarDelivery('provincia', 12)">
+                                <i class="fa-solid fa-box-archive"></i>
+                                <strong>Envío a provincia</strong>
+                                <span>Desde S/ 12</span>
+                            </div>
+                        </div>
+
+                        <div class="delivery-fields-container" id="delivery-fields-box">
+                            <div id="fields-domicilio" class="delivery-subfields">
+                                <div class="form-group">
+                                    <label class="form-label">Dirección de entrega *</label>
+                                    <input type="text" id="chk-direccion" placeholder="Dirección exacta (Av./Jr./Calle, N°)">
+                                </div>
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Distrito *</label>
+                                        <input type="text" id="chk-distrito" placeholder="Distrito de Lima o Callao">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Referencia</label>
+                                        <input type="text" id="chk-referencia" placeholder="Cerca a parque / avenida / grifo">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="fields-estacion" class="delivery-subfields hidden">
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Red de Transporte *</label>
+                                        <select id="chk-linea-estacion" onchange="actualizarEstaciones()">
+                                            <option value="Metropolitano">Metropolitano</option>
+                                            <option value="Tren Eléctrico">Tren Eléctrico (Línea 1)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Estación de Encuentro *</label>
+                                        <select id="chk-estacion-nombre"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="fields-provincia" class="delivery-subfields hidden">
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Agencia de Envío *</label>
+                                        <select id="chk-agencia-provincia">
+                                            <option value="Shalom">Shalom</option>
+                                            <option value="Olva Courier">Olva Courier</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Ciudad / Departamento *</label>
+                                        <input type="text" id="chk-ciudad-provincia" placeholder="Ej. Arequipa, Trujillo, Cusco">
+                                    </div>
+                                </div>
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Oficina de Destino *</label>
+                                        <input type="text" id="chk-oficina-provincia" placeholder="Nombre o dirección de la agencia">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">DNI del Receptor *</label>
+                                        <input type="text" id="chk-dni-provincia" placeholder="Número de DNI">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-step-block">
+                        <h2>3. Método de pago</h2>
+                        <div class="payment-methods-list">
+                            <label class="payment-option-row active" onclick="seleccionarMetodoPago(this, 'Yape / Plin')">
+                                <input type="radio" name="payment_method" checked>
+                                <div class="payment-text">
+                                    <strong>Yape / Plin</strong>
+                                    <span>Yape o Plin al +51 926 412 894</span>
+                                </div>
+                            </label>
+                            <label class="payment-option-row" onclick="seleccionarMetodoPago(this, 'Transferencia bancaria')">
+                                <input type="radio" name="payment_method">
+                                <div class="payment-text">
+                                    <strong>Transferencia bancaria</strong>
+                                    <span>BCP / Interbank</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-summary-area">
+                    <div class="summary-card">
+                        <h3>Resumen del pedido</h3>
+                        <div id="checkout-summary-items" class="summary-items-list"></div>
+                        <div class="summary-totals">
+                            <div class="total-row">
+                                <span>Subtotal</span>
+                                <span id="summary-subtotal">S/ 0.00</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Envío</span>
+                                <span id="summary-envio">S/ 10.00</span>
+                            </div>
+                            <div class="total-row grand-total">
+                                <span>Total</span>
+                                <span id="summary-total">S/ 0.00</span>
+                            </div>
+                        </div>
+                        <button class="btn-confirm-whatsapp-order" onclick="enviarPedidoFinalWhatsApp()">
+                            <i class="fa-brands fa-whatsapp"></i> Confirmar pedido por WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE BENEFICIOS (AZUL CLARO) -->
+    <section class="benefits-section">
+        <div class="container benefits-grid">
+            <div class="benefit-card">
+                <i class="fa-solid fa-scissors benefit-icon"></i>
+                <h3>Calidad garantizada</h3>
+                <p>Materiales resistentes y acabados de alta durabilidad.</p>
+            </div>
+            <div class="benefit-card">
+                <i class="fa-solid fa-shield-halved benefit-icon"></i>
+                <h3>Compra 100% segura</h3>
+                <p>Paga con Yape, Plin o transferencia verificada.</p>
+            </div>
+            <div class="benefit-card">
+                <i class="fa-solid fa-truck-fast benefit-icon"></i>
+                <h3>Envíos a todo el Perú</h3>
+                <p>Despachos con Olva Courier y Shalom con número de seguimiento.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Carrito Lateral Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Tu carrito</h3>
+            <button class="close-cart" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="empty-cart-msg">Tu carrito está vacío.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Subtotal</span>
+                <span id="cart-total-price">S/ 0.00</span>
+            </div>
+            <button class="btn-checkout-primary" onclick="irACheckout()">Finalizar compra</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- PIE DE PÁGINA FOOTER -->
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <img src="img/morral-1-1.jpg" alt="Logo Vintage Milenio" class="footer-logo">
+                <p class="footer-brand-desc">Morrales, mochilas, carteras y accesorios con alma vintage. Hechos para durar.</p>
+                <div class="footer-socials">
+                    <a href="https://instagram.com/vintagemilenio" target="_blank">Instagram</a> · 
+                    <a href="https://facebook.com/vintagemilenio" target="_blank">Facebook</a> · 
+                    <a href="https://tiktok.com/@vintagemilenio" target="_blank">TikTok: @vintagemilenio</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">ENLACES ÚTILES</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#">Políticas de cambio</a></li>
+                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Libro de reclamaciones</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">ATENCIÓN AL CLIENTE</h4>
+                <div class="footer-info-list">
+                    <p><strong>WhatsApp:</strong> +51 926 412 894</p>
+                    <p><strong>Horario:</strong> Lun a Sáb · 9:00 am – 8:00 pm</p>
+                    <p><strong>Pagos:</strong> Yape · Plin · Transferencia · Tarjeta</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Vintage Milenio. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
